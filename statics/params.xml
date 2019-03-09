@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--> 程序运行静态参数设定 </!-->
+<opencv_storage>
+    <!--灯柱筛选条件-->
+    <armour_detector>        
+        <minArea> 4 </minArea>
+        <maxHeightWidthRat> 9 </maxHeightWidthRat>
+        <minHeightWidthRat> 0.8 </minHeightWidthRat>
+        <tanAngle> 0.6 </tanAngle>
+        <angleRange> 10 </angleRange>
+        <deviationAngle> 15 </deviationAngle>
+        <armourPixelAvg> 30 </armourPixelAvg>
+    </armour_detector>
+
+    <!--摄像头参数-->
+    <camera_parameter>
+        <brightness> 10 </brightness>
+        <contrast> 12 </contrast>
+        <hue> 4 </hue>
+        <saturation> 25 </saturation>
+        <pan> 6 </pan>
+        <gamma> 96 </gamma>
+        <white_balance_red_v> 5400 </white_balance_red_v>
+        <backlight> 1 </backlight>
+        <gain> 0 </gain>
+        <exposure> -6 </exposure>
+     </camera_parameter>
+
+    <!--图像hsv三通道阈值参数-->
+    <red_image_preprocessor_threshod>
+        160 180 190 255 215 255
+    </red_image_preprocessor_threshod>
+
+    <blue_image_preprocessor_threshod>
+        100 120 190 255 220 255
+    </blue_image_preprocessor_threshod>
+</opencv_storage>
