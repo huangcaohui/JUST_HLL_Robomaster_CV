@@ -34,21 +34,21 @@ bool ArmourTracker::track(Mat srcImage)
     correctBorders(srcImage, armourBlock);
 
     //获取矫正后矩形框的Mat形式，方便之后处理
-    updateRoi = srcImage(Rect2d(armourBlock.x, armourBlock.y, armourBlock.width, armourBlock.height));
+//    updateRoi = srcImage(Rect2d(armourBlock.x, armourBlock.y, armourBlock.width, armourBlock.height));
 
-    Rect2d minBoundRect;
+//    Rect2d minBoundRect;
 
-    if(3*armourBlock.area() > roi.cols*roi.rows)
-    {
-        //对矩形框进行矫正，获取其最小外接矩形
-        minBoundRect = refineRect(updateRoi, srcImage);
-    }
+//    if(3*armourBlock.area() > roi.cols*roi.rows)
+//    {
+//        //对矩形框进行矫正，获取其最小外接矩形
+//        minBoundRect = refineRect(updateRoi, srcImage);
+//    }
 
-    armourBlock = Rect2d(minBoundRect.x + armourBlock.x - armourBlock.height/4,
-                         minBoundRect.y + armourBlock.y - armourBlock.height/2,
-                         minBoundRect.width, minBoundRect.height);
+//    armourBlock = Rect2d(minBoundRect.x + armourBlock.x - armourBlock.height/4,
+//                         minBoundRect.y + armourBlock.y - armourBlock.height/2,
+//                         minBoundRect.width, minBoundRect.height);
 
-    correctBorders(srcImage, armourBlock);
+//    correctBorders(srcImage, armourBlock);
 
     return true;
 }
@@ -586,17 +586,25 @@ RotatedRect ArmourTracker::sortArmour(RotatedRect* appraiseArmour,
     return optimalArmour;
 }
 
-void ArmourTracker::correctBorders(Mat& srcImage, Rect2d& initRect)
+void ArmourTracker::correctBorders(const Mat srcImage, Rect2d& initRect)
 {
     Rect2d region = initRect;
 
     //对越界矩形边界进行纠正
-    if (initRect.x < 0){initRect.x = 0;initRect.width += region.x;}
+    if (initRect.x < 0)
+    {
+        initRect.x = 0;
+        initRect.width += region.x;
+    }
     if (initRect.x + initRect.width > srcImage.cols)
     {
         initRect.width = srcImage.cols - region.x;
     }
-    if (initRect.y < 0){initRect.y = 0;initRect.height += region.y;};
+    if (initRect.y < 0)
+    {
+        initRect.y = 0;
+        initRect.height += region.y;
+    }
     if ( initRect.y + initRect.height > srcImage.rows)
     {
         initRect.height = srcImage.rows - region.y;

@@ -54,7 +54,17 @@ void Control::run()
     //视频图像缓存区域
     Mat frame;
 
-    //prediction.init();
+    //帧计数
+    int count = 0;
+
+    //预测暂存框
+    Rect2d predictBlock;
+
+    //填补帧
+    bool frequency[5] = {0};
+
+    //卡尔曼滤波初始化
+    prediction.init();
 
     while(true)
     {               
@@ -118,8 +128,9 @@ void Control::run()
             }
         }
 
-        //if(findArmourBlock == true)
-        //prediction.predict(frame, armourBlock);
+        //进行检测与跟踪的装甲板填补
+        prediction.fillArmourBlock(frame, frequency, sizeof(frequency)/sizeof(frequency[0]),
+                                   count, predictBlock, armourBlock, findArmourBlock);
 
         //在输出图像中画出装甲板中心轨迹
         //Tool::drawPoints(frame, points);

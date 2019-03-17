@@ -122,12 +122,12 @@ void Tool::showPoints(Mat resizeFrame, short coord, int org_x, int org_y)
     int font_face = FONT_HERSHEY_COMPLEX;
 
     //显示坐标
-    putText(resizeFrame, text, origin, font_face, 1, Scalar(0, 255, 255), 2);
+    putText(resizeFrame, text, origin, font_face, 1, Scalar(0, 255, 0), 2);
 }
 
-void Tool::drawVectorBlocks(Mat srcImage,
-                                const vector<RotatedRect>& minRotatedRects,
-                                const Scalar& color)
+void Tool::drawBlocks(Mat srcImage,
+                            const vector<RotatedRect>& minRotatedRects,
+                            const Scalar& color)
 {
     for(unsigned int i = 0; i < minRotatedRects.size(); i++)
     {
@@ -141,7 +141,7 @@ void Tool::drawVectorBlocks(Mat srcImage,
     }
 }
 
-void Tool::drawArrayBlocks(Mat srcImage,
+void Tool::drawBlocks(Mat srcImage,
                            const RotatedRect* minRotatedRects,
                            int armoursNum,
                            const Scalar& color)

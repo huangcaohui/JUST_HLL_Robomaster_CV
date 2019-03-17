@@ -158,7 +158,7 @@ public:
      * @param[in] srcImage 原图像
      * @param[in] initRect 输入的矩形框
      */
-    void correctBorders(Mat& srcImage, Rect2d& initRect);
+    void correctBorders(const Mat srcImage, Rect2d& initRect);
 
     /**
      * @brief 获取分类后筛选出来的两矩形框的外接矩形

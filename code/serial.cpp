@@ -62,7 +62,7 @@ void Serial::writeBytes(const cv::Rect2d& armourBlock, const cv::Mat& resizeFram
     //    yDiff = static_cast<short>(resizeFrame.rows/2 - (armourBlock.y + armourBlock.height/2));
 
     xDiff = static_cast<short>(armourBlock.x +armourBlock.width/2);
-    yDiff = static_cast<short>(resizeFrame.rows - armourBlock.y);
+    yDiff = static_cast<short>(resizeFrame.rows - armourBlock.y - armourBlock.height/2);
 
     //视频显示适时坐标
     Tool::showPoints(resizeFrame, xDiff, 50, 50);
@@ -98,8 +98,8 @@ void Serial::readBytes()
         receiveFlag = 1;
     }
 
-    qDebug() << "********************************" << endl;
-    qDebug() << "receive data: " << buffer.toHex() << endl;
-    qDebug() << "********************************" << endl;
+//    qDebug() << "********************************" << endl;
+//    qDebug() << "receive data: " << buffer.toHex() << endl;
+//    qDebug() << "********************************" << endl;
 }
 }

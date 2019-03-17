@@ -74,10 +74,10 @@ bool ArmourDetector::detect(const Mat& srcImage)
     markArmourBlocks(srcImage, dstImage, armourBlocks, directAngle, armoursNum);
 
 #ifdef DEBUG
-    Tool::drawVectorBlocks(drawImage,
-                           vector<RotatedRect>(1, optimalArmourBlocks.front().block),
-                           Scalar(255, 255, 0));
-    imshow("detect",drawImage);
+    Tool::drawBlocks(drawImage,
+                     vector<RotatedRect>(1, optimalArmourBlocks.front().block),
+                     Scalar(255, 255, 0));
+    //imshow("detect",drawImage);
 #endif
 
     delete []lamps; lamps = nullptr;
@@ -152,7 +152,8 @@ vector<vector<Point> > ArmourDetector::searchBlocks(Mat srcImage)
             if(*srcImagePtr++)
             {
                 //根据找到的起点，递归遍历所有它的相邻像素
-                 blocks.push_back(vector<Point>());
+                blocks.push_back(vector<Point>());
+
                 //由于存在两种不同的访问方式，需要进行坐标转换
                 if(row == 0)
                 {

@@ -137,7 +137,7 @@ public:
     * @param[in] color 线条颜色
     * @return null
     */
-    static void drawVectorBlocks(Mat srcImage,
+    static void drawBlocks(Mat srcImage,
                           const vector<RotatedRect>& minRotatedRects,
                           const Scalar& color);
 
@@ -148,7 +148,7 @@ public:
      * @param[in] armoursNum minRotatedRects的实际数量
      * @param[in] color 矩形框的颜色
      */
-    static void drawArrayBlocks(Mat srcImage,
+    static void drawBlocks(Mat srcImage,
                          const RotatedRect* minRotatedRects,
                          int armoursNum,
                          const Scalar& color);

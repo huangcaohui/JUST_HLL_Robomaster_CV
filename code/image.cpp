@@ -65,8 +65,8 @@ Mat Image::preprocess(const Mat& srcImage)
     detectValue = value;
 
     //闭操作，去除H通道噪声点，以水平方向为主膨胀H,S通道像素
-    Mat kernel_1 = getStructuringElement(MORPH_RECT, Size(4,1));
-    Mat kernel_2 = getStructuringElement(MORPH_RECT, Size(5,2));
+    Mat kernel_1 = getStructuringElement(MORPH_RECT, Size(4, 1));
+    Mat kernel_2 = getStructuringElement(MORPH_RECT, Size(5, 2));
     erode(hue, hue, kernel_1);
     dilate(hue, hue, kernel_2);
     dilate(saturation, saturation, kernel_1);
@@ -98,22 +98,22 @@ Mat Image::preprocess(const Mat& srcImage)
 }
 
 void Image::threshProcess(const Mat& srcImage,
-                             Mat& framethreshold,
-                             Mat& hue,
-                             Mat& saturation,
-                             Mat& value,
-                             Mat& orgValue)
+                          Mat& framethreshold,
+                          Mat& hue,
+                          Mat& saturation,
+                          Mat& value,
+                          Mat& orgValue)
 {
     //查找轮廓，只检索最外面的轮廓，将所有的连码点转换成点
     vector<vector<Point> > contours;//定义一个返回轮廓的容器
     findContours(value, contours, CV_RETR_EXTERNAL, CV_CHAIN_APPROX_NONE);
 
-    //轮廓的最小外接矩形
-    Rect *boundRect = new Rect[contours.size()];
-    RotatedRect *rotatedRect = new RotatedRect[contours.size()];
-
     if(contours.size() != 0)
     {
+        //轮廓的最小外接矩形
+        Rect *boundRect = new Rect[contours.size()];
+        RotatedRect *rotatedRect = new RotatedRect[contours.size()];
+
         for(unsigned int a = 0; a < contours.size(); ++a)
         {
             rotatedRect[a] = minAreaRect(contours[a]);
@@ -124,14 +124,21 @@ void Image::threshProcess(const Mat& srcImage,
 
             if(longEdge < 10*shortEdge)
             {
-                if(fabs(rotatedRect[a].angle) < 30 || fabs(rotatedRect[a].angle) > 60)
+                Point2f p[4];
+                rotatedRect[a].points(p);
+
+                double distance1 = pow((p[0].x - p[1].x), 2) + pow((p[0].y - p[1].y), 2),
+                       distance2 = pow((p[0].x - p[3].x), 2) + pow((p[0].y - p[3].y), 2);
+
+                if((fabs(rotatedRect[a].angle) < 30 && distance1 > distance2)
+                        || (fabs(rotatedRect[a].angle) > 60 && distance1 < distance2))
                 {
                     //计算团块周边红绿特征
                     double contoursArea = fabs(contourArea(contours[a], false));
                     unsigned int redAvg = 0, blueAvg = 0;
                     double hueContourPixels = 0;
 
-                    if(1.4*contoursArea > double(rotatedRect[a].size.area()))
+                    if(2*contoursArea > double(rotatedRect[a].size.area()))
                     {
                         Point point;
                         for(unsigned int b = 0; b < contours[a].size(); ++b)
@@ -239,10 +246,9 @@ BREAK:
                 }
             }
         }
+        delete []boundRect;
+        delete []rotatedRect;
     }
-
-    delete []boundRect;
-    delete []rotatedRect;
 }
 
 void Image::setThreshod(int channel, int minOrMax, int value)
