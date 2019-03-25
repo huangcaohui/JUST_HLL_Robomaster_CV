@@ -64,7 +64,7 @@ public:
     *         返回true，表示检测到装甲板区域；
     *         返回false，表示未检测到装甲板区域
     */
-    bool detect(const Mat& srcImage);
+    bool detect(const Mat &srcImage);
 
     /**
     * @brief 获取上一次图像中检测出的最佳装甲板区域

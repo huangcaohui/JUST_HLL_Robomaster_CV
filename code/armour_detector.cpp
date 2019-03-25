@@ -57,7 +57,7 @@ bool ArmourDetector::detect(const Mat& srcImage)
         lamps[i] = lampBlocks[i];
 
     //为中间结果显示准备图像
-    Mat drawImage = srcImage.clone();
+    Mat drawImage = srcImage;
 
     //存储筛选过符合条件的所有对灯柱对最小包围矩形即装甲板区域
     double *directAngle = new double[lampsNum*(lampsNum - 1)/2];
@@ -74,10 +74,10 @@ bool ArmourDetector::detect(const Mat& srcImage)
     markArmourBlocks(srcImage, dstImage, armourBlocks, directAngle, armoursNum);
 
 #ifdef DEBUG
-    Tool::drawBlocks(drawImage,
-                     vector<RotatedRect>(1, optimalArmourBlocks.front().block),
-                     Scalar(255, 255, 0));
-    //imshow("detect",drawImage);
+//    Tool::drawBlocks(drawImage,
+//                     vector<RotatedRect>(1, optimalArmourBlocks.front().block),
+//                     Scalar(255, 255, 0));
+//    imshow("detect",drawImage);
 #endif
 
     delete []lamps; lamps = nullptr;
@@ -251,14 +251,12 @@ void ArmourDetector::extracArmourBlocks(RotatedRect* armourBlocks,
                              (sqrt(pow(vecI.x, 2) + pow(vecI.y, 2)) *
                               sqrt(pow(vecJ.x, 2) + pow(vecJ.y, 2))));
 
-                //弧度制转角度制
-                angle *= 180/CV_PI;
-
-                if(angle < double(params.angleRange))
+                if(angle*180 < double(params.angleRange)*CV_PI)
                 {
+
                     if((double(lampBlocks[i].size.area()) > 0.2*double(lampBlocks[j].size.area()))
                             &&(double(lampBlocks[j].size.area()) > 0.2*double(lampBlocks[i].size.area())))
-                    {
+                    {                     
                         //获取所有不重复的外接矩形
                         if(!sequence[i])
                         {
@@ -286,6 +284,7 @@ void ArmourDetector::extracArmourBlocks(RotatedRect* armourBlocks,
             }
         }
     }
+
 
     for(int i = 0; i < pairNum; ++i)
     {
@@ -505,7 +504,6 @@ void ArmourDetector::domainCountDetect(const RotatedRect* initLightBlocks,
 //    int cols = right;
 //    stack<Point> pointStack; // 堆栈
 
-    //通过压栈计算框定区域内连通域数量
     //矫正边界
     correctBorder(left, top, width, height, dstImage);
 
@@ -514,6 +512,7 @@ void ArmourDetector::domainCountDetect(const RotatedRect* initLightBlocks,
         doubleHeight = dstImage.rows - top - 1;
 
     Rect armourRect = Rect(Point(left, top), Point(left + width, top + doubleHeight));
+    //通过压栈计算框定区域内连通域数量
     /*
     for (unsigned int i = top; i < rows; ++i)
     {
@@ -586,15 +585,22 @@ void ArmourDetector::domainCountDetect(const RotatedRect* initLightBlocks,
     {
         labelValue = 0;
 
-        //越界矫正
-        int soleHeight = int(max(initLightBlocks[0].size.height, initLightBlocks[0].size.width));
-        if(bottom + soleHeight > dstImage.rows)
-            soleHeight = dstImage.rows - bottom - 1;
+        double lightArea = double(initLightBlocks[0].size.area());
 
         vector<vector<Point> > contours;
-        Mat roi = value(Rect(left, top, width, height + soleHeight));
+        Mat roi = value(Rect(left, top, width, height));
         findContours(roi, contours, CV_RETR_EXTERNAL, CV_CHAIN_APPROX_NONE);
-        labelValue = contours.size();
+
+        for(unsigned int i = 0; i < contours.size(); ++i)
+        {
+            double contoursArea = fabs(contourArea(contours[i], false));
+
+            //防止噪点产生干扰
+            if(2*contoursArea > lightArea && 2*lightArea > contoursArea)
+            {
+                ++labelValue;
+            }
+        }
     }
 }
 

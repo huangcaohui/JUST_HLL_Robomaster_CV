@@ -125,9 +125,9 @@ void Tool::showPoints(Mat resizeFrame, short coord, int org_x, int org_y)
     putText(resizeFrame, text, origin, font_face, 1, Scalar(0, 255, 0), 2);
 }
 
-void Tool::drawBlocks(Mat srcImage,
-                            const vector<RotatedRect>& minRotatedRects,
-                            const Scalar& color)
+void Tool::drawBlocks(Mat &srcImage,
+                      const vector<RotatedRect>& minRotatedRects,
+                      const Scalar& color)
 {
     for(unsigned int i = 0; i < minRotatedRects.size(); i++)
     {
@@ -141,10 +141,10 @@ void Tool::drawBlocks(Mat srcImage,
     }
 }
 
-void Tool::drawBlocks(Mat srcImage,
-                           const RotatedRect* minRotatedRects,
-                           int armoursNum,
-                           const Scalar& color)
+void Tool::drawBlocks(Mat &srcImage,
+                      const RotatedRect* minRotatedRects,
+                      int armoursNum,
+                      const Scalar& color)
 {
     for(int i = 0; i < armoursNum; i++)
     {
@@ -155,6 +155,19 @@ void Tool::drawBlocks(Mat srcImage,
         {
             line(srcImage, points[j], points[(j+1)%4], color, 2);
         }
+    }
+}
+
+void Tool::drawBlocks(Mat &srcImage,
+                      const RotatedRect minRotatedRects,
+                      const Scalar& color)
+{
+    Point2f points[4];
+    minRotatedRects.points(points);
+
+    for(unsigned int j = 0; j < 4; j++)
+    {
+        line(srcImage, points[j], points[(j+1)%4], color, 2);
     }
 }
 

@@ -48,10 +48,16 @@ bool Serial::init(QString portName)
 void Serial::writeBytes(const cv::Rect2d& armourBlock, const cv::Mat& resizeFrame,
                         const bool& findArmourBlock)
 {
+    QByteArray buffer;
+    short checksum = 8*127;
+
     //如果没有检测到装甲板，则发送特殊字节串b 01111111 01111111 01111111 01111111
     if(findArmourBlock == false)
     {
-        write(QByteArray(8, 127));
+        buffer.append(QByteArray(8, 127));
+        buffer.append(reinterpret_cast<char*>(&checksum), 2);
+        write(buffer);
+
         return ;
     }
     short int xDiff, yDiff;
@@ -72,13 +78,14 @@ void Serial::writeBytes(const cv::Rect2d& armourBlock, const cv::Mat& resizeFram
     //yDiff = 0;
 
     //待写入数据缓冲区
-    QByteArray buffer;
+    checksum = HEAD+xDiff+yDiff+TAIL;
 
     //向缓冲区添加表示两个短整型数的四个字节
     buffer.append(reinterpret_cast<char*>(&HEAD), 2);
     buffer.append(reinterpret_cast<char*>(&xDiff), 2);
     buffer.append(reinterpret_cast<char*>(&yDiff), 2);
     buffer.append(reinterpret_cast<char*>(&TAIL), 2);
+    buffer.append(reinterpret_cast<char*>(&checksum), 2);
 
     write(buffer);
     waitForBytesWritten(5);

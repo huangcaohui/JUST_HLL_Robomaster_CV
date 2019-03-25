@@ -54,10 +54,10 @@ public:
     //! 视频播放控制状态常量
     enum
     {
-      ESC = 27,               /*!< 退出 */
-      PAUSE = ' ',            /*!< 暂停 */
-      MOVE_BACK = 'j',        /*!< 回放一帧 */
-      MOVE_FORWARD = 'k',     /*!< 快进一帧 */
+        ESC = 27,               /*!< 退出 */
+        PAUSE = ' ',            /*!< 暂停 */
+        MOVE_BACK = 'j',        /*!< 回放一帧 */
+        MOVE_FORWARD = 'k',     /*!< 快进一帧 */
     };
 
     /**
@@ -137,9 +137,9 @@ public:
     * @param[in] color 线条颜色
     * @return null
     */
-    static void drawBlocks(Mat srcImage,
-                          const vector<RotatedRect>& minRotatedRects,
-                          const Scalar& color);
+    static void drawBlocks(Mat &srcImage,
+                           const vector<RotatedRect>& minRotatedRects,
+                           const Scalar& color);
 
     /**
      * @brief 在原图上画出类型为array的旋转矩形
@@ -148,10 +148,20 @@ public:
      * @param[in] armoursNum minRotatedRects的实际数量
      * @param[in] color 矩形框的颜色
      */
-    static void drawBlocks(Mat srcImage,
-                         const RotatedRect* minRotatedRects,
-                         int armoursNum,
-                         const Scalar& color);
+    static void drawBlocks(Mat &srcImage,
+                           const RotatedRect* minRotatedRects,
+                           int armoursNum,
+                           const Scalar& color);
+
+    /**
+     * @brief 在原图上画出类型为RotatedRect的旋转矩形
+     * @param[in] srcImage 待检测原图像
+     * @param[in] minRotatedRects 最小外接矩形
+     * @param[in] color 矩形框的颜色
+     */
+    static void drawBlocks(Mat &srcImage,
+                      const RotatedRect minRotatedRects,
+                      const Scalar& color);
 
     /**
      * @brief 将短型字符转字符型
