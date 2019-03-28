@@ -32,7 +32,7 @@ bool ArmourDetector::init(string xmlPath)
     return true;
 }
 
-bool ArmourDetector::detect(const Mat& srcImage)
+bool ArmourDetector::detect(Mat& srcImage)
 {
     Mat dstImage = preprocess(srcImage);
     Mat value = detectValue;
@@ -45,6 +45,8 @@ bool ArmourDetector::detect(const Mat& srcImage)
 
     //存储找到的所有灯柱块
     vector<RotatedRect> lampBlocks = calcBlocksInfo(blocks, lampsNum);
+
+    //Tool::drawBlocks(srcImage, lampBlocks, Scalar(0, 0, 255));
 
     //将vector存储到数组中
     if(lampsNum < 2)
@@ -62,7 +64,7 @@ bool ArmourDetector::detect(const Mat& srcImage)
     //存储筛选过符合条件的所有对灯柱对最小包围矩形即装甲板区域
     double *directAngle = new double[lampsNum*(lampsNum - 1)/2];
     RotatedRect *armourBlocks = new RotatedRect[lampsNum*(lampsNum - 1)/2];
-    extracArmourBlocks(armourBlocks, lamps, dstImage, value, lampsNum, directAngle, armoursNum);
+    extracArmourBlocks(armourBlocks, lamps, dstImage, value, lampsNum, directAngle, armoursNum, srcImage);
 
     if(!armoursNum)
     {
@@ -214,7 +216,8 @@ void ArmourDetector::extracArmourBlocks(RotatedRect* armourBlocks,
                                         const Mat value,
                                         const int lampsNum,
                                         double* directAngle,
-                                        int& armoursNum)
+                                        int &armoursNum,
+                                        Mat &srcImage)
 {
     int screenNum = 0;
     int pairNum = 0;
@@ -589,6 +592,10 @@ void ArmourDetector::domainCountDetect(const RotatedRect* initLightBlocks,
 
         vector<vector<Point> > contours;
         Mat roi = value(Rect(left, top, width, height));
+
+        //防止噪点产生干扰
+        medianBlur(roi, roi, 3);
+
         findContours(roi, contours, CV_RETR_EXTERNAL, CV_CHAIN_APPROX_NONE);
 
         for(unsigned int i = 0; i < contours.size(); ++i)

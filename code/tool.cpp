@@ -122,7 +122,7 @@ void Tool::showPoints(Mat resizeFrame, short coord, int org_x, int org_y)
     int font_face = FONT_HERSHEY_COMPLEX;
 
     //显示坐标
-    putText(resizeFrame, text, origin, font_face, 1, Scalar(0, 255, 0), 2);
+    putText(resizeFrame, text, origin, font_face, 1, Scalar(0, 0, 0), 2);
 }
 
 void Tool::drawBlocks(Mat &srcImage,

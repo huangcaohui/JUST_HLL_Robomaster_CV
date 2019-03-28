@@ -60,16 +60,16 @@ Mat Image::preprocess(const Mat& srcImage)
     medianBlur(hsvImages[0], hue, 3);
     medianBlur(hsvImages[1], saturation,3);
     medianBlur(hsvImages[2], value, 1);
-    //blur(value, value, Size(3,3));
 
     detectValue = value;
 
     //闭操作，去除H通道噪声点，以水平方向为主膨胀H,S通道像素
-    Mat kernel_1 = getStructuringElement(MORPH_RECT, Size(4, 1));
+    Mat kernel_1 = getStructuringElement(MORPH_RECT, Size(3, 1));
     Mat kernel_2 = getStructuringElement(MORPH_RECT, Size(5, 2));
     erode(hue, hue, kernel_1);
     dilate(hue, hue, kernel_2);
     dilate(saturation, saturation, kernel_1);
+    //dilate(value, value, kernel_1);
 
     //初始化二值化图
     Mat framethreshold = Mat(value.size(), CV_8UC1, Scalar(0));
