@@ -28,8 +28,8 @@ bool Camera::init(int cameraId, string xmlPath)
     node["exposure"] >>params.exposure;
 
     srcFile.open(cameraId);
-//    srcFile.set(CAP_PROP_FRAME_WIDTH, 960);
-//    srcFile.set(CAP_PROP_FRAME_HEIGHT, 540);
+    srcFile.set(CAP_PROP_FRAME_WIDTH, 1280);
+    srcFile.set(CAP_PROP_FRAME_HEIGHT, 720);
 //    srcFile.set(CAP_PROP_SETTINGS, -1);
 //    srcFile.set(CAP_PROP_BRIGHTNESS, params.brightness);
 //    srcFile.set(CAP_PROP_CONTRAST, params.contrast);

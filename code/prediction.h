@@ -75,7 +75,7 @@ public:
      * @return null
      */
     void fillArmourBlock(Mat image, bool *frequency, int n,
-                         int &count, Rect2d &predictBlock, Rect2d &armourBlock, bool &findArmourBlock);
+                         int &counts, Rect2d &predictBlock, Rect2d &armourBlock, bool &findArmourBlock);
 
     /**
      * @brief 对越界的矩形框矩形矫正

@@ -148,12 +148,12 @@ Rect2d Prediction::predict(const Mat srcImage, Rect2d armourblock)
 }
 
 void Prediction::fillArmourBlock(Mat image, bool *frequency, int n,
-                                 int &count, Rect2d &predictBlock, Rect2d &armourBlock, bool &findArmourBlock)
+                                 int &counts, Rect2d &predictBlock, Rect2d &armourBlock, bool &findArmourBlock)
 {
     if(findArmourBlock == true)
     {
         predictBlock = predict(image, armourBlock);
-        frequency[count%n] = true;
+        frequency[counts%n] = true;
     }
     else
     {
@@ -170,10 +170,10 @@ void Prediction::fillArmourBlock(Mat image, bool *frequency, int n,
             findArmourBlock = true;
         }
 
-        frequency[count%n] = false;
+        frequency[counts%n] = false;
     }
 
-    ++count;
+    ++counts;
 }
 
 Rect2d Prediction::correctBorders(const Mat srcImage, Rect2d initRect)

@@ -38,7 +38,7 @@ Control::Control()
     if(armourDetector.init(xmlPath))
     {
         qDebug() << "ArmourDetector init sucess!" << endl;
-    }    
+    }
 }
 
 void Control::run()
@@ -55,7 +55,7 @@ void Control::run()
     Mat frame;
 
     //帧计数
-    int count = 0;
+    int counts = 0;
 
     //预测暂存框
     Rect2d predictBlock;
@@ -66,8 +66,12 @@ void Control::run()
     //卡尔曼滤波初始化
     prediction.init();
 
+    double time = getTickCount();
+
     while(true)
-    {               
+    {
+        //添加运行时间统计
+        Tool::setTimeCount(1, Tool::BEGIN, "total time");
 
         if(serial.receiveFlag == 0)
         {
@@ -88,14 +92,8 @@ void Control::run()
         //Tool::setTrackBarFollow("srcFile", video.getVideo());
         //waitKey(1);
 
-        //添加运行时间统计
-        Tool::setTimeCount(1, Tool::BEGIN, "total time");
-
         //读取一帧图像
         camera >> frame;
-
-        //添加运行时间统计
-        Tool::setTimeCount(1, Tool::END, "total time");
 
         //视频播放完毕跳出程序
         if(frame.empty())
@@ -134,7 +132,7 @@ void Control::run()
 
         //进行检测与跟踪的装甲板填补
         prediction.fillArmourBlock(frame, frequency, sizeof(frequency)/sizeof(frequency[0]),
-                                   count, predictBlock, armourBlock, findArmourBlock);
+                                   counts, predictBlock, armourBlock, findArmourBlock);
 
         //在输出图像中画出装甲板中心轨迹
         //Tool::drawPoints(frame, points);
@@ -151,7 +149,11 @@ void Control::run()
         //显示原图像(重调大小后)
         imshow("srcFile", frame);
 
+        //添加运行时间统计
+        Tool::setTimeCount(1, Tool::END, "total time");
     }
+
+    cout << "average time:" << (getTickCount() - time)/getTickFrequency()/counts*1e3 << "ms" << endl;
 
     destroyAllWindows();
 }
