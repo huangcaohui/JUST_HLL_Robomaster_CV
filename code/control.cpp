@@ -68,6 +68,7 @@ void Control::run()
 
     while(true)
     {               
+
         if(serial.receiveFlag == 0)
         {
             armourDetector.setColor(Image::RED);
@@ -79,9 +80,6 @@ void Control::run()
 
         cout << "Detect color is: " << armourDetector.getColor() << endl;
 
-        //添加运行时间统计
-        Tool::setTimeCount(1, Tool::BEGIN, "total time");
-
         //添加键盘控制
         Tool::addKeyboardControl(video.getVideo());
         Tool::addKeyboardControl(camera.getCamera());
@@ -90,8 +88,14 @@ void Control::run()
         //Tool::setTrackBarFollow("srcFile", video.getVideo());
         //waitKey(1);
 
+        //添加运行时间统计
+        Tool::setTimeCount(1, Tool::BEGIN, "total time");
+
         //读取一帧图像
         camera >> frame;
+
+        //添加运行时间统计
+        Tool::setTimeCount(1, Tool::END, "total time");
 
         //视频播放完毕跳出程序
         if(frame.empty())
@@ -147,8 +151,6 @@ void Control::run()
         //显示原图像(重调大小后)
         imshow("srcFile", frame);
 
-        //添加运行时间统计
-        Tool::setTimeCount(1, Tool::END, "total time");
     }
 
     destroyAllWindows();

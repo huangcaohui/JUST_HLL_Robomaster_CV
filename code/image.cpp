@@ -122,7 +122,7 @@ void Image::threshProcess(const Mat& srcImage,
             float longEdge = max(rotatedRect[a].size.height, rotatedRect[a].size.width);
             float shortEdge = min(rotatedRect[a].size.height, rotatedRect[a].size.width);
 
-            if(longEdge < 10*shortEdge)
+            if(longEdge < 18*shortEdge)
             {
                 Point2f p[4];
                 rotatedRect[a].points(p);

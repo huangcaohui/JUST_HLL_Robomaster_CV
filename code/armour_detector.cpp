@@ -46,7 +46,7 @@ bool ArmourDetector::detect(Mat& srcImage)
     //存储找到的所有灯柱块
     vector<RotatedRect> lampBlocks = calcBlocksInfo(blocks, lampsNum);
 
-    //Tool::drawBlocks(srcImage, lampBlocks, Scalar(0, 0, 255));
+    //Tool::drawBlocks(srcImage, lampBlocks, Scalar(255, 255, 0));
 
     //将vector存储到数组中
     if(lampsNum < 2)
@@ -58,9 +58,6 @@ bool ArmourDetector::detect(Mat& srcImage)
     for(unsigned i = 0; i < lampBlocks.size(); ++i)
         lamps[i] = lampBlocks[i];
 
-    //为中间结果显示准备图像
-    Mat drawImage = srcImage;
-
     //存储筛选过符合条件的所有对灯柱对最小包围矩形即装甲板区域
     double *directAngle = new double[lampsNum*(lampsNum - 1)/2];
     RotatedRect *armourBlocks = new RotatedRect[lampsNum*(lampsNum - 1)/2];
@@ -69,7 +66,7 @@ bool ArmourDetector::detect(Mat& srcImage)
     if(!armoursNum)
     {
         return false;
-    }
+    } 
 
     //对每个装甲板区域评分
 
@@ -303,6 +300,8 @@ void ArmourDetector::extracArmourBlocks(RotatedRect* armourBlocks,
         if(labelValue == 2)
         {
             initArmourBlock = getArmourRotated(initLightBlocks, 2);
+
+            //Tool::drawBlocks(srcImage, initArmourBlock, Scalar(0,0,255));
 
             Point vecArmourY = calVectorY(initArmourBlock);
             Point vecArmourX = calVectorX(initArmourBlock);
@@ -585,10 +584,10 @@ void ArmourDetector::domainCountDetect(const RotatedRect* initLightBlocks,
 
     //再一次进行连通域检测，排除灯柱附近的一些噪点与错误匹配
     if(labelValue == 2)
-    {
+    {      
         labelValue = 0;
 
-        double lightArea = double(initLightBlocks[0].size.area());
+        double lightArea = double(initLightBlocks[0].size.area() + initLightBlocks[1].size.area())/2;
 
         vector<vector<Point> > contours;
         Mat roi = value(Rect(left, top, width, height));
@@ -603,7 +602,7 @@ void ArmourDetector::domainCountDetect(const RotatedRect* initLightBlocks,
             double contoursArea = fabs(contourArea(contours[i], false));
 
             //防止噪点产生干扰
-            if(2*contoursArea > lightArea && 2*lightArea > contoursArea)
+            if(4*contoursArea > lightArea && 4*lightArea > contoursArea)
             {
                 ++labelValue;
             }
