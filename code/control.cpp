@@ -9,13 +9,13 @@ Control::Control()
     //定义xml文件和video文件的路径
 #if defined(Q_OS_WIN)
     string xmlPath = "F:/QT Projects/JUST_HLL_Robomaster_CV/statics/params.xml",
-            videoPath = "F:/Robomaster/HCVC/视觉素材/视觉素材/炮台素材红车旋转-ev-0.MOV",
-            cameraXmlPath = "F:/QT Projects/JUST_HLL_Robomaster_CV/statics/cameraParams.xml";
+           videoPath = "F:/Robomaster/HCVC/视觉素材/视觉素材/炮台素材红车旋转-ev-0.MOV",
+           cameraXmlPath = "F:/QT Projects/JUST_HLL_Robomaster_CV/statics/cameraParams.xml";
     QString serialPort = "COM12";
 #elif defined(Q_OS_LINUX)
     string xmlPath = "/home/teliute/JUST_HLL_Robomaster_CV/statics/params.xml",
-            videoPath = "/home/teliute/video/炮台素材红车旋转-ev-0.MOV",
-            cameraXmlPath = "/home/teliute/JUST_HLL_Robomaster_CV/statics/cameraParams.xml";
+           videoPath = "/home/teliute/video/炮台素材红车旋转-ev-0.MOV",
+           cameraXmlPath = "/home/teliute/JUST_HLL_Robomaster_CV/statics/cameraParams.xml";
     QString serialPort = "ttyUSB0";
 #endif
 
@@ -35,16 +35,6 @@ Control::Control()
 
     //初始化串口
     if(serial.init(serialPort))
-    {
-        qDebug() << "SerialPort init sucess!" << endl;
-    }
-
-    if(_serial.init("ttyUSB1"))
-    {
-        qDebug() << "SerialPort init sucess!" << endl;
-    }
-
-    if(__serial.init("ttyUSB2"))
     {
         qDebug() << "SerialPort init sucess!" << endl;
     }
@@ -93,6 +83,11 @@ void Control::run()
     //卡尔曼滤波初始化
     prediction.init();
 
+#if defined(Q_OS_LINUX)
+    thread t(&HCVC::Camera::videoRecord, this);
+    t.detach();
+#endif
+
     while(true)
     {
         //添加运行时间统计
@@ -131,13 +126,13 @@ void Control::run()
         //检测到的装甲区域
         Rect2d armourBlock;
         bool findArmourBlock = false;
-        double distance = 0;
+        //double distance = 0;
 
         //检测图片中的灯柱位置
         if(status == DETECTING && armourDetector.detect(frame))
         {
             armourBlock = armourDetector.getBestArmourBlock().boundingRect2f();
-            distance = ranging.calDistance(armourDetector.getBestArmourBlock());
+            //distance = ranging.calDistance(armourDetector.getBestArmourBlock());
             armourTracker.init(frame, armourBlock);
             status = TRACKING;
             findArmourBlock = true;
@@ -172,8 +167,6 @@ void Control::run()
 
         //向串口写入相对坐标
         serial.writeBytes(armourBlock, frame, findArmourBlock);
-        _serial.writeBytes(armourBlock, frame, findArmourBlock);
-        __serial.writeBytes(armourBlock, frame, findArmourBlock);
 
         //显示原图像(重调大小后)
         imshow("srcFile", frame);

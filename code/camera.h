@@ -34,6 +34,9 @@
 #include <QDomDocument>
 #include <QtCore/QFile>
 
+/*C++标准库*/
+#include <time.h>
+
 namespace HCVC
 {
 //! @addtogroup deivce
@@ -77,7 +80,12 @@ public:
      * @brief 访问私有成员srcFile
      * @return 私有成员srcFile
      */
-    VideoCapture &getCamera();  
+    VideoCapture &getCamera();
+
+    /**
+     * @brief 通过摄像头录取视频
+     */
+    void videoRecord();
 
     //! 摄像头参数
     struct Params
