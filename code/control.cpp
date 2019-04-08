@@ -83,10 +83,7 @@ void Control::run()
     //卡尔曼滤波初始化
     prediction.init();
 
-#if defined(Q_OS_LINUX)
-    thread t(&HCVC::Camera::videoRecord, this);
-    t.detach();
-#endif
+    //camera.threadRecord();
 
     while(true)
     {
@@ -153,7 +150,7 @@ void Control::run()
         }
 
         //进行检测与跟踪的装甲板填补
-        prediction.fre_fillArmourBlock(frame, frequency, sizeof(frequency)/sizeof(frequency[0]),
+        prediction.fillArmourBlock(frame, frequency, sizeof(frequency)/sizeof(frequency[0]),
                                        count, predictBlock, armourBlock, findArmourBlock);
 
         //在输出图像中画出装甲板中心轨迹
