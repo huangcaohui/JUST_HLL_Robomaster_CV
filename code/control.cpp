@@ -7,8 +7,19 @@ Control::Control()
     status = DETECTING;
 
     //定义xml文件和video文件的路径
-    string xmlPath = "/home/HLL/JUST_HLL_Robomaster_CV/statics/params.xml",
-           videoPath = "/home/HLL/video/炮台素材红车旋转-ev-0.MOV";
+#if defined(Q_OS_WIN)
+    string xmlPath = "F:/QT Projects/JUST_HLL_Robomaster_CV/statics/params.xml",
+            videoPath = "F:/Robomaster/HCVC/视觉素材/视觉素材/炮台素材红车旋转-ev-0.MOV",
+            cameraXmlPath = "F:/QT Projects/JUST_HLL_Robomaster_CV/statics/cameraParams.xml";
+    QString serialPort = "COM12";
+#elif defined(Q_OS_LINUX)
+    string xmlPath = "/home/teliute/JUST_HLL_Robomaster_CV/statics/params.xml",
+            videoPath = "/home/teliute/video/炮台素材红车旋转-ev-0.MOV",
+            cameraXmlPath = "/home/teliute/JUST_HLL_Robomaster_CV/statics/cameraParams.xml";
+    QString serialPort = "ttyUSB0";
+#endif
+
+    Image::Color color = Image::RED;
 
     //初始化视频
     if(video.init(videoPath))
@@ -23,13 +34,23 @@ Control::Control()
     }
 
     //初始化串口
-    if(serial.init("ttyUSB0"))
+    if(serial.init(serialPort))
+    {
+        qDebug() << "SerialPort init sucess!" << endl;
+    }
+
+    if(_serial.init("ttyUSB1"))
+    {
+        qDebug() << "SerialPort init sucess!" << endl;
+    }
+
+    if(__serial.init("ttyUSB2"))
     {
         qDebug() << "SerialPort init sucess!" << endl;
     }
 
     //初始化预处理模块
-    if(armourDetector.init(Image::RED, xmlPath))
+    if(armourDetector.init(color, xmlPath))
     {
         qDebug() << "Color init sucess!" << endl;
     }
@@ -38,6 +59,12 @@ Control::Control()
     if(armourDetector.init(xmlPath))
     {
         qDebug() << "ArmourDetector init sucess!" << endl;
+    }
+
+    //初始化测距模块
+    if(ranging.init(cameraXmlPath))
+    {
+        qDebug() << "Ranging init success!" << endl;
     }
 }
 
@@ -55,7 +82,7 @@ void Control::run()
     Mat frame;
 
     //帧计数
-    int counts = 0;
+    int count = 0;
 
     //预测暂存框
     Rect2d predictBlock;
@@ -65,8 +92,6 @@ void Control::run()
 
     //卡尔曼滤波初始化
     prediction.init();
-
-    double time = getTickCount();
 
     while(true)
     {
@@ -106,11 +131,13 @@ void Control::run()
         //检测到的装甲区域
         Rect2d armourBlock;
         bool findArmourBlock = false;
+        double distance = 0;
 
         //检测图片中的灯柱位置
         if(status == DETECTING && armourDetector.detect(frame))
         {
-            armourBlock = armourDetector.getBestArmourBlock();
+            armourBlock = armourDetector.getBestArmourBlock().boundingRect2f();
+            distance = ranging.calDistance(armourDetector.getBestArmourBlock());
             armourTracker.init(frame, armourBlock);
             status = TRACKING;
             findArmourBlock = true;
@@ -131,8 +158,8 @@ void Control::run()
         }
 
         //进行检测与跟踪的装甲板填补
-        prediction.fillArmourBlock(frame, frequency, sizeof(frequency)/sizeof(frequency[0]),
-                                   counts, predictBlock, armourBlock, findArmourBlock);
+        prediction.fre_fillArmourBlock(frame, frequency, sizeof(frequency)/sizeof(frequency[0]),
+                                       count, predictBlock, armourBlock, findArmourBlock);
 
         //在输出图像中画出装甲板中心轨迹
         //Tool::drawPoints(frame, points);
@@ -145,6 +172,8 @@ void Control::run()
 
         //向串口写入相对坐标
         serial.writeBytes(armourBlock, frame, findArmourBlock);
+        _serial.writeBytes(armourBlock, frame, findArmourBlock);
+        __serial.writeBytes(armourBlock, frame, findArmourBlock);
 
         //显示原图像(重调大小后)
         imshow("srcFile", frame);
@@ -152,8 +181,6 @@ void Control::run()
         //添加运行时间统计
         Tool::setTimeCount(1, Tool::END, "total time");
     }
-
-    cout << "average time:" << (getTickCount() - time)/getTickFrequency()/counts*1e3 << "ms" << endl;
 
     destroyAllWindows();
 }

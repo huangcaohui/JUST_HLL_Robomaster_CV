@@ -24,7 +24,7 @@
         <white_balance_red_v> 5400 </white_balance_red_v>
         <backlight> 1 </backlight>
         <gain> 0 </gain>
-        <exposure> -7 </exposure>
+        <exposure> -5 </exposure>
      </camera_parameter>
 
     <!--图像hsv三通道阈值参数-->

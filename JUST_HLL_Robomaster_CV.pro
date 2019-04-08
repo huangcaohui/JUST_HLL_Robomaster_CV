@@ -5,6 +5,7 @@
 #-------------------------------------------------
 QT += serialport
 QT += core gui
+QT += xml
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -43,7 +44,8 @@ HEADERS += \
     code/common.h \
     code/image.h \
     code/control.h \
-    code/prediction.h
+    code/prediction.h \
+    code/ranging.h
 
 SOURCES += \
     code/armour_detector.cpp \
@@ -56,10 +58,12 @@ SOURCES += \
     code/video.cpp \
     code/image.cpp \
     code/control.cpp \
-    code/prediction.cpp
+    code/prediction.cpp \
+    code/ranging.cpp
 
 DISTFILES += \
-    statics/params.xml
+    statics/params.xml \
+    statics/cameraParams.xml
 
 #DEFINES += DEBUG
 

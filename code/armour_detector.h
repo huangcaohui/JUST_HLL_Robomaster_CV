@@ -71,7 +71,7 @@ public:
     * @details 对装甲板检测流程总体控制，向外提供运行装甲板检测模块运行接口
     * @return 包围装甲板区域旋转矩形的矩形
     */
-    Rect2d getBestArmourBlock() const;
+    RotatedRect getBestArmourBlock() const;
 
     //! 装甲板判定参数
     struct Params

@@ -88,19 +88,19 @@ void Serial::writeBytes(const cv::Rect2d& armourBlock, const cv::Mat& resizeFram
     buffer.append(reinterpret_cast<char*>(&checksum), 2);
 
     write(buffer);
-    waitForBytesWritten(5);
+    waitForBytesWritten(1);
 }
 
 void Serial::readBytes()
 {
     QByteArray buffer;
-    buffer = readAll();
+    buffer = readAll().mid(0, 1);
 
-    if(buffer.toHex() == "0000")
+    if(buffer.toHex() == "00")
     {
         receiveFlag = 0;
     }
-    if(buffer.toHex() == "1111")
+    if(buffer.toHex() == "0f")
     {
         receiveFlag = 1;
     }
@@ -108,5 +108,8 @@ void Serial::readBytes()
 //    qDebug() << "********************************" << endl;
 //    qDebug() << "receive data: " << buffer.toHex() << endl;
 //    qDebug() << "********************************" << endl;
+
+    //清除缓冲区
+    buffer.clear();
 }
 }

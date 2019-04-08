@@ -64,6 +64,28 @@ public:
     Rect2d predict(const Mat srcImage, Rect2d armourblock);
 
     /**
+     * @brief 预测画框的概率
+     * @param[in] frequency 在原图上进行显示
+     * @param[in] findArmourBlock 用于记录识别情况的布尔型数组
+     * @return 返回画出的矩形
+     */
+    double fre_predict(bool *frequency, bool &findArmourBlock, int &count, int n);
+
+    /**
+    * @brief  在进行概率预测的同时进行填补
+    * @param[in] image 输入图像
+    * @param  [in] frequency 用于进行概率统计和生成初始概率值的数组
+    * @param  [in] n 数组长度
+    * @param  [in] count 帧数统计
+    * @param  [in] predictBlock 预测暂存框
+    * @param  [in] armourBlock 用于数据传输的装甲板
+    * @param  [in] findArmourBlock 是否发现装甲板
+    * @return null
+    */
+    void fre_fillArmourBlock(Mat image, bool *frequency, int n,
+                             int &count1, Rect2d &predictBlock, Rect2d &armourBlock, bool &findArmourBlock);
+
+    /**
      * @brief 填补检测与跟踪的空缺帧
      * @param[in] image 输入图像
      * @param[in] frequency 用于判断填补的数据频率
@@ -75,7 +97,7 @@ public:
      * @return null
      */
     void fillArmourBlock(Mat image, bool *frequency, int n,
-                         int &counts, Rect2d &predictBlock, Rect2d &armourBlock, bool &findArmourBlock);
+                         int &count, Rect2d &predictBlock, Rect2d &armourBlock, bool &findArmourBlock);
 
     /**
      * @brief 对越界的矩形框矩形矫正
@@ -91,9 +113,12 @@ private:
 
     //! 卡尔曼滤波器2
     KalmanFilter KF2;
+
+    //!概率预测卡尔曼滤波器
+    KalmanFilter KF;
     
     //! 初始测量值x'(0)，用于后面更新
-    Mat measurement1, measurement2;
+    Mat measurement1, measurement2, measurement;
 };
 }
 

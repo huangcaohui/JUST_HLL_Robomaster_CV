@@ -1,4 +1,4 @@
-﻿/*****************************************************************************
+/*****************************************************************************
 *  HLL Computer Vision Code                                                  *
 *  Copyright (C) 2018 HLL  1915589872@qq.com.                                *
 *                                                                            *
@@ -24,89 +24,72 @@
 *                                                                            *
 *****************************************************************************/
 
-/**
-* @defgroup armour_recognition 装甲板识别模块组
-*
-* @defgroup device 设备驱动模块组
-*
-* @defgroup control 总控制模块组
-*
-* @defgroup debug 调试模块组
-*
-* @defgroup ranging 测距模块组
-*/
+#ifndef RANGING_H
+#define RANGING_H
 
-#ifndef MAIN_H
-#define MAIN_H
+#include "common.h"
 
-/*自定义库*/
-#include "armour_detector.h"
-#include "armour_tracker.h"
-#include "prediction.h"
-#include "serial.h"
-#include "camera.h"
-#include "video.h"
-#include "ranging.h"
+/*OpenCV测距算法库*/
+#include <opencv2/calib3d.hpp>
 
-/**
-* @brief HLL Computer Vision Code namepace.
-*
-*/
-namespace HCVC {
-//! @addtogroup control
+namespace HCVC
+{
+//! @addtogroup ranging
 //! @{
+
 /**
- * @brief 系统总体逻辑控制
- * @details 包括装甲板的识别与追踪，大神符检测，串口通信模块的协调控制
+ * @brief 对识别到的目标进行测距
+ * @details 在识别到目标后，通过PNP算法对目标进行测距
  */
-class Control
+class Ranging
 {
 public:
     /**
-    * @brief 初始化
-    *
-    */
-    Control();
+     * @brief 初始化
+     *
+     */
+    Ranging();
 
     /**
-    * @brief 运行整体系统并显示运行结果
-    * @return null
-    */
-    void run();
+     * @brief 读取摄像机矩阵参数
+     * @param[in] xmlPath 需要打开的xml文件路径
+     * @return 是否初始化成功
+     */
+    bool init(string xmlPath);
 
-protected:
-    //! 图像检测器，处理并分析图像找出装甲的初始位置
-    ArmourDetector armourDetector;
+    /**
+     * @brief 计算相机与装甲板的距离
+     * @details 选取四组点，通过PNP进行求解
+     * @param[in] rect 识别到的装甲板的最小外接矩形
+     * @return 计算出的距离
+     */
+    double calDistance(RotatedRect rect);
 
-    //! 运动追踪器，对经过图像检测后找到的灯柱区域跟踪
-    ArmourTracker armourTracker;
-
-    //! 装甲板预测器，对检测到的装甲板进行预测并更新
-    Prediction prediction;
+    //! 摄像机的标定参数
+    struct CameraParams
+    {
+        Size imageSize;                     /*!< 图像分辨率 */
+        Mat	cameraMatrix;			        /*!< 摄像机内参矩阵 */
+        Mat	distCoeff;	        /*!< 摄像机畸变参数 */
+        double skew;                        /*!< 摄像机x,y轴的垂直偏差 */
+    }params;
 
 private:
-    //! 装甲板检测状态常量
-    enum
-    {
-        DETECTING, /*!< 检测状态 */
-        TRACKING,  /*!< 跟踪状态 */
-    };
+    /**
+     * @brief 将每个节点中的参数写入相应的矩阵
+     * @param[in] 标定文件的节点
+     * @return 标定参数的矩阵
+     */
+    Mat writeMatrix(FileNode node);
 
-    //! 当前装甲板检测程序的状态
-    int status;
-
-    //! 串口通信类
-    Serial serial, _serial, __serial;
-
-    //! 摄像头
-    Camera camera;
-
-    //! 视频
-    Video video;
-
-    //! 测距
-    Ranging ranging;
+    /**
+     * @brief 将矩形的四个点进行分组
+     * @details 以矩形左下角第一个点为p0，逆时针方向将点存入容器
+     * @param[in] rect 输入的最小外接矩形
+     * @return 按顺序存储的容器
+     */
+    vector<Point2f> dividePoints(RotatedRect rect);
 };
 //! @}
 }
-#endif // MAIN_H
+#endif // RANGING_H

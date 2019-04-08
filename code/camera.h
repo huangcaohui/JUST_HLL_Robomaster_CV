@@ -30,6 +30,10 @@
 /*公共头文件*/
 #include "common.h"
 
+/*Qt库*/
+#include <QDomDocument>
+#include <QtCore/QFile>
+
 namespace HCVC
 {
 //! @addtogroup deivce
@@ -56,6 +60,13 @@ public:
     bool init(int cameraId, string xmlPath);
 
     /**
+     * @brief 读取摄像头参数并写入xml文件
+     * @brief[in] 需要打开的xml文件路径
+     * @return null
+     */
+    bool writeCamParams(string xmlPath);
+
+    /**
     * @brief 读取视频流下一帧图像
     * @param[out] frame 下一帧图像
     * @return 视频流数据结构
@@ -66,7 +77,7 @@ public:
      * @brief 访问私有成员srcFile
      * @return 私有成员srcFile
      */
-    VideoCapture &getCamera();
+    VideoCapture &getCamera();  
 
     //! 摄像头参数
     struct Params

@@ -35,6 +35,22 @@ void Prediction::init()
     //初始测量值x'(0)初始化
     measurement1 = Mat::zeros(2, 1, CV_32F);
     measurement2 = Mat::zeros(2, 1, CV_32F);
+
+    const int StateNum1 = 1;
+    const int MeasureNum1 = 1;
+
+    //初始化参数
+    KF.init(StateNum1, MeasureNum1, 0);
+    KF.transitionMatrix = (Mat_<float>(1,  1) << 1.1);                                //转移矩阵
+    setIdentity(KF.measurementMatrix);                                                //测量矩阵
+    setIdentity(KF.processNoiseCov,Scalar::all(5e-3));                                //系统噪声协方差矩阵
+    setIdentity(KF.measurementNoiseCov,Scalar::all(5e-3));                            //测量噪声协方差矩阵
+    setIdentity(KF.errorCovPost,Scalar::all(5e-3));
+
+    randn(KF.statePost, Scalar::all(0), Scalar::all(0.1));
+
+    //初始测量值的定义
+    measurement = Mat::zeros(1, 1, CV_32F);
 }
 
 Rect2d Prediction::predict(const Mat srcImage, Rect2d armourblock)
@@ -147,13 +163,88 @@ Rect2d Prediction::predict(const Mat srcImage, Rect2d armourblock)
     return correctBorders(srcImage, Rect2d(predict_pt1, predict_pt2));
 }
 
-void Prediction::fillArmourBlock(Mat image, bool *frequency, int n,
-                                 int &counts, Rect2d &predictBlock, Rect2d &armourBlock, bool &findArmourBlock)
+double Prediction::fre_predict(bool *frequency, bool &findArmourBlock, int &count, int n)
+{
+    //定义概率
+    float probability = 0;
+
+    //迭代系数
+    double Iteration_coefficient = 0.335;
+
+    //开始进行概率的获取   注意：下标([i])与余数(count%n)相等
+    int i ;
+
+    //首先从5帧的最后部分开始
+    for(i = count%n; i >= 0; --i)
+    {
+        probability += frequency[i]*Iteration_coefficient;
+        Iteration_coefficient -= 0.067;
+    }
+
+    //然后从这5帧的开头开始
+    if(count%n != n - 1)
+    {
+        Iteration_coefficient = 0.067;
+        for(i = (count%n + 1); i < n; ++i)
+        {
+            probability += frequency[i]*Iteration_coefficient;
+            Iteration_coefficient += 0.067;
+        }
+    }
+
+    ++count;
+
+    //下面开始卡尔曼滤波的预测部分
+    //首先定义矩阵用来存放概率值
+    Mat state = (Mat_<float>(1,1) << probability);
+
+    //预测
+    Mat prediction = KF.predict();
+
+    //初始化测量值
+    randn(measurement,Scalar::all(0), Scalar::all(KF.measurementNoiseCov.at<double>(0)));
+
+    //使用卡尔曼滤波第二个公式获得测量值
+    measurement += KF.measurementMatrix * state;
+
+    //校验更新结果
+    Mat statePost = KF.correct(measurement);
+
+    if(probability < 0)
+    {
+        probability = 0;
+    }
+
+    return double(prediction.at<float>(0));
+}
+
+
+void Prediction::fre_fillArmourBlock(Mat image, bool *frequency,int n,int &count,
+                                     Rect2d &predictBlock, Rect2d &armourBlock, bool &findArmourBlock )
 {
     if(findArmourBlock == true)
     {
         predictBlock = predict(image, armourBlock);
-        frequency[counts%n] = true;
+        frequency[count%n] = true;
+    }
+    else
+    {
+        if(fre_predict(frequency, findArmourBlock, count, n) >= 0.5)
+        {
+            armourBlock = predictBlock;
+            findArmourBlock = true;
+            frequency[count%n] = false;
+        }
+    }
+}
+
+void Prediction::fillArmourBlock(Mat image, bool *frequency, int n,
+                                 int &count, Rect2d &predictBlock, Rect2d &armourBlock, bool &findArmourBlock)
+{
+    if(findArmourBlock == true)
+    {
+        predictBlock = predict(image, armourBlock);
+        frequency[count%n] = true;
     }
     else
     {
@@ -170,10 +261,10 @@ void Prediction::fillArmourBlock(Mat image, bool *frequency, int n,
             findArmourBlock = true;
         }
 
-        frequency[counts%n] = false;
+        frequency[count%n] = false;
     }
 
-    ++counts;
+    ++count;
 }
 
 Rect2d Prediction::correctBorders(const Mat srcImage, Rect2d initRect)

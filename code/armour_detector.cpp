@@ -12,7 +12,7 @@ bool ArmourDetector::init(string xmlPath)
     FileStorage fs(xmlPath, FileStorage::READ);
     if(!fs.isOpened())
     {
-        cout << "Open file failed" << endl;
+        cout << "Open " << xmlPath << " file failed" << endl;
         return false;
     }
 
@@ -86,9 +86,9 @@ bool ArmourDetector::detect(Mat& srcImage)
     return true;
 }
 
-Rect2d ArmourDetector::getBestArmourBlock() const
+RotatedRect ArmourDetector::getBestArmourBlock() const
 {
-    return optimalArmourBlocks.front().block.boundingRect();
+    return optimalArmourBlocks.front().block;
 }
 
 void ArmourDetector::fillLampBlock(Mat& srcImage,

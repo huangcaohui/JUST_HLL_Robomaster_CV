@@ -12,7 +12,7 @@ bool Image::init(Color color, string xmlPath)
     FileStorage fs(xmlPath, FileStorage::READ);
     if(!fs.isOpened())
     {
-        cout << "Open file failed" << endl;
+        cout << "Open " << xmlPath << " file failed" << endl;
         return false;
     }
     FileNode nodeR = fs["red_image_preprocessor_threshod"],
@@ -264,8 +264,6 @@ int Image::getThreshod(int channel, int minOrMax) const
 void Image::setColor(Image::Color color)
 {
     this->color = color;
-
-    cout << "*thresholds:" << **thresholds << endl;
 
     if(color == RED && **thresholds != **thresholdsR)
     {
