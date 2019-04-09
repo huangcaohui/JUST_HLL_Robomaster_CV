@@ -36,9 +36,9 @@ bool Serial::init(QString portName)
 
         clearError();
         clear();
+
         //设定触发事件，如果串口有数据，则触发读取函数
         connect(this, SIGNAL(readyRead()), this, SLOT(readBytes()));
-
         return true;
     }
 

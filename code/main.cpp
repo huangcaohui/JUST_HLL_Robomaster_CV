@@ -1,17 +1,18 @@
 ﻿#ifdef DEBUG
     /*Qt库*/
     #include "mainwindow.h"
-    #include <QApplication>
 #else
     /*主控制库*/
     #include "control.h"
 #endif
+    #include <QApplication>
 
 int main(int argc, char *argv[])
 {
 
-#ifdef DEBUG
     QApplication a(argc, argv);
+
+#ifdef DEBUG
     MainWindow instance;
     instance.show();
 #else
@@ -23,8 +24,10 @@ int main(int argc, char *argv[])
 #ifdef DEBUG
     instance.close();
 
-    return a.exec();
+
 #else
     return 0;
 #endif
+
+    return a.exec();
 }

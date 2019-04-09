@@ -84,13 +84,13 @@ void Control::run()
     prediction.init();
 
     ////获取当地时间
-    time_t timep;
-    std::time(&timep);
-    char tmp[64];
-    strftime(tmp, sizeof(tmp), "%Y-%m-%d %H:%M:%S", localtime(&timep));
+//    time_t timep;
+//    std::time(&timep);
+//    char tmp[64];
+//    strftime(tmp, sizeof(tmp), "%Y-%m-%d %H:%M:%S", localtime(&timep));
 
-    Size size = Size(1280, 720);
-    VideoWriter writer(string("/home/teliute/video/") + tmp + ".avi", CV_FOURCC('M', 'P', '4', '2'), 30, size);
+//    Size size = Size(1280, 720);
+//    VideoWriter writer(string("/home/teliute/video/") + tmp + ".avi", CV_FOURCC('M', 'P', '4', '2'), 30, size);
 
     while(true)
     {

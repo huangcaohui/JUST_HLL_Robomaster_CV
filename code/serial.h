@@ -34,6 +34,7 @@
 #include <QtSerialPort/QSerialPort>
 #include <QtSerialPort/QSerialPortInfo>
 #include <QDebug>
+#include <QTimer>
 
 /*自定义库*/
 #include "tool.h"
