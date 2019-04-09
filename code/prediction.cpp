@@ -163,10 +163,10 @@ Rect2d Prediction::predict(const Mat srcImage, Rect2d armourblock)
     return correctBorders(srcImage, Rect2d(predict_pt1, predict_pt2));
 }
 
-double Prediction::fre_predict(bool *frequency, bool &findArmourBlock, int &count, int n)
+double Prediction::fre_predict(bool *frequency, int count, int n)
 {
     //定义概率
-    float probability = 0;
+    double probability = 0;
 
     //迭代系数
     double Iteration_coefficient = 0.335;
@@ -191,8 +191,6 @@ double Prediction::fre_predict(bool *frequency, bool &findArmourBlock, int &coun
             Iteration_coefficient += 0.067;
         }
     }
-
-    ++count;
 
     //下面开始卡尔曼滤波的预测部分
     //首先定义矩阵用来存放概率值
@@ -220,7 +218,7 @@ double Prediction::fre_predict(bool *frequency, bool &findArmourBlock, int &coun
 
 
 void Prediction::fre_fillArmourBlock(Mat image, bool *frequency,int n,int &count,
-                                     Rect2d &predictBlock, Rect2d &armourBlock, bool &findArmourBlock )
+                                     Rect2d &predictBlock, Rect2d &armourBlock, bool &findArmourBlock)
 {
     if(findArmourBlock == true)
     {
@@ -229,17 +227,19 @@ void Prediction::fre_fillArmourBlock(Mat image, bool *frequency,int n,int &count
     }
     else
     {
-        if(fre_predict(frequency, findArmourBlock, count, n) >= 0.5)
+        if(fre_predict(frequency, count, n) >= 0.3)
         {
             armourBlock = predictBlock;
-            findArmourBlock = true;
-            frequency[count%n] = false;
+            findArmourBlock = true;           
         }
+        frequency[count%n] = false;
     }
+
+    ++count;
 }
 
-void Prediction::fillArmourBlock(Mat image, bool *frequency, int n,
-                                 int &count, Rect2d &predictBlock, Rect2d &armourBlock, bool &findArmourBlock)
+void Prediction::fillArmourBlock(Mat image, bool *frequency, int n, int &count,
+                                 Rect2d &predictBlock, Rect2d &armourBlock, bool &findArmourBlock)
 {
     if(findArmourBlock == true)
     {

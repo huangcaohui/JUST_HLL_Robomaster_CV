@@ -39,9 +39,6 @@
 #ifndef MAIN_H
 #define MAIN_H
 
-/*C++库*/
-#include <thread>
-
 /*自定义库*/
 #include "armour_detector.h"
 #include "armour_tracker.h"
