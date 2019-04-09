@@ -170,31 +170,4 @@ VideoCapture &Camera::getCamera()
 {
     return srcFile;
 }
-
-void Camera::videoRecord()
-{
-    //获取当地时间.
-    time_t timep;
-    std::time(&timep);
-    char tmp[64];
-    strftime(tmp, sizeof(tmp), "%Y-%m-%d %H:%M:%S", localtime(&timep));
-
-    Size size = Size(1280, 720);
-    VideoWriter writer(string("/home/teliute/video/") + tmp + ".avi", CV_FOURCC('M', 'J', 'P', 'G'), 30, size);
-    Mat frame;
-
-    while(1)
-    {
-        srcFile >> frame;
-        writer << frame;
-    }
-}
-
-void Camera::threadRecord()
-{
-#if defined(Q_OS_LINUX)
-    thread t(&HCVC::Camera::videoRecord, this);
-    t.detach();
-#endif
-}
 }

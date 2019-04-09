@@ -83,8 +83,14 @@ void Control::run()
     //卡尔曼滤波初始化
     prediction.init();
 
-    //多线程录视频
-    //camera.threadRecord();
+    ////获取当地时间
+    time_t timep;
+    std::time(&timep);
+    char tmp[64];
+    strftime(tmp, sizeof(tmp), "%Y-%m-%d %H:%M:%S", localtime(&timep));
+
+    Size size = Size(1280, 720);
+    VideoWriter writer(string("/home/teliute/video/") + tmp + ".avi", CV_FOURCC('M', 'P', '4', '2'), 30, size);
 
     while(true)
     {
@@ -112,6 +118,7 @@ void Control::run()
 
         //读取一帧图像
         camera >> frame;
+        //writer << frame;
 
         //视频播放完毕跳出程序
         if(frame.empty())

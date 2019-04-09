@@ -34,10 +34,6 @@
 #include <QDomDocument>
 #include <QtCore/QFile>
 
-/*C++标准库*/
-#include <time.h>
-#include <thread>
-
 namespace HCVC
 {
 //! @addtogroup deivce
@@ -82,16 +78,6 @@ public:
      * @return 私有成员srcFile
      */
     VideoCapture &getCamera();
-
-    /**
-     * @brief 通过摄像头录取视频
-     */
-    void videoRecord();
-
-    /**
-     * @brief 多线程录制
-     */
-    void threadRecord();
 
     //! 摄像头参数
     struct Params
