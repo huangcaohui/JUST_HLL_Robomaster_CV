@@ -3,7 +3,7 @@
 namespace HCVC {
 Camera::Camera()
 {
-    
+
 }
 
 bool Camera::init(int cameraId, string xmlPath)
@@ -33,7 +33,7 @@ bool Camera::init(int cameraId, string xmlPath)
     //    srcFile.set(CAP_PROP_SETTINGS, -1);
     //    srcFile.set(CAP_PROP_BRIGHTNESS, params.brightness);
     //    srcFile.set(CAP_PROP_CONTRAST, params.contrast);
-    //    srcFile.set(CAP_hue, params.hue);
+    //    srcFile.set(CAP_PROP_HUE, params.hue);
     //    srcFile.set(CAP_PROP_SATURATION, params.saturation);
     //    srcFile.set(CAP_PROP_PAN, params.pan);
     //    srcFile.set(CAP_PROP_GAMMA, params.gamma);
@@ -58,12 +58,18 @@ bool Camera::writeCamParams(string xmlPath)
     double gainDate = srcFile.get(CV_CAP_PROP_GAIN);
     double exposureDate = srcFile.get(CV_CAP_PROP_EXPOSURE);
 
-    QFile file(QString::fromStdString(xmlPath));
-    if(!file.open(QFile::ReadOnly))
-        return false;
+    std::cout<<brightnessDate<<'\t';
+    std::cout<<contrastDate<<'\t';
+    std::cout<<hueDate<<'\t';
+    std::cout<<saturationDate<<'\t';
+    std::cout<<panDate<<'\t';
+    std::cout<<gammaDate<<'\t';
+    std::cout<<white_balance_red_vDate<<'\t';
+    std::cout<<backlightDate<<'\t';
+    std::cout<<gainDate<<'\t';
+    std::cout<<exposureDate<<'\t'<<'\n';
 
-    //更新一个标签项,如果知道xml的结构，直接定位到那个标签上定点更新
-    //或者用遍历的方法去匹配tagname，value来更新
+    QFile file(QString::fromStdString(xmlPath));
     QDomDocument doc;
     if(!doc.setContent(&file))
     {
@@ -75,7 +81,7 @@ bool Camera::writeCamParams(string xmlPath)
     QDomElement root = doc.documentElement();
     QDomNodeList list = root.elementsByTagName("camera_parameter");
 
-    //定位到第三个一级子节点的子元素并寻找下一个参数
+    //定位到第三个一级子节点的子元素并寻找下一个参数(主定位功能区）
     QDomNode brightness = list.at(list.size() - 1).firstChild();
     QDomNode contrast = brightness.nextSibling();
     QDomNode hue = contrast.nextSibling();
@@ -87,61 +93,72 @@ bool Camera::writeCamParams(string xmlPath)
     QDomNode gain = backlight.nextSibling();
     QDomNode exposure = gain.nextSibling();
 
-    QString brightnessString = QString::number(brightnessDate);
+    //寻找到对应节点的值并替换
+    QString b = QString::number(brightnessDate);
+    QString brightnessString = QString("%1 %2 %3").arg("\0").arg(b).arg("\0");
     QDomNode brightnessOld = brightness.firstChild();
     brightness.firstChild().setNodeValue(brightnessString);
     QDomNode brightnessNew = brightness.firstChild();
-    brightness.replaceChild(brightnessNew, brightnessOld);
+    brightness.replaceChild(brightnessNew,brightnessOld);
 
-    QString contrastString = QString::number(contrastDate);
+    QString c = QString::number(contrastDate);
+    QString contrastString = QString("%1 %2 %3").arg("\0").arg(c).arg("\0");
     QDomNode contrastOld = contrast.firstChild();
     contrast.firstChild().setNodeValue(contrastString);
     QDomNode contrastNew = contrast.firstChild();
     contrast.replaceChild(contrastNew, contrastOld);
 
-    QString hueString = QString::number(hueDate);
+    QString h = QString::number(hueDate);
+    QString hueString = QString("%1 %2 %3").arg("\0").arg(h).arg("\0");
     QDomNode hueOld = hue.firstChild();
     hue.firstChild().setNodeValue(hueString);
     QDomNode hueNew = hue.firstChild();
     hue.replaceChild(hueNew, hueOld);
 
-    QString saturationString = QString::number(saturationDate);
+    QString s = QString::number(hueDate);
+    QString saturationString = QString("%1 %2 %3").arg("\0").arg(h).arg("\0");
     QDomNode saturationOld = saturation.firstChild();
     saturation.firstChild().setNodeValue(saturationString);
     QDomNode saturationNew = saturation.firstChild();
     saturation.replaceChild(saturationNew, saturationOld);
 
-    QString panString = QString::number(panDate);
+    QString p = QString::number(panDate);
+    QString panString = QString("%1 %2 %3").arg("\0").arg(h).arg("\0");
     QDomNode panOld = pan.firstChild();
     pan.firstChild().setNodeValue(panString);
     QDomNode panNew = pan.firstChild();
     pan.replaceChild(panNew, panOld);
 
-    QString gammaString = QString::number(gammaDate);
+    QString g = QString::number(gammaDate);
+    QString gammaString = QString("%1 %2 %3").arg("\0").arg(h).arg("\0");
     QDomNode gammaOld = gamma.firstChild();
     gamma.firstChild().setNodeValue(gammaString);
     QDomNode gammaNew = gamma.firstChild();
     gamma.replaceChild(gammaNew, gammaOld);
 
-    QString white_balance_red_vString = QString::number(white_balance_red_vDate);
+    QString w = QString::number(white_balance_red_vDate);
+    QString white_balance_red_vString = QString("%1 %2 %3").arg("\0").arg(h).arg("\0");
     QDomNode white_balance_red_vOld = white_balance_red_v.firstChild();
     white_balance_red_v.firstChild().setNodeValue(white_balance_red_vString);
     QDomNode white_balance_red_vNew = white_balance_red_v.firstChild();
     white_balance_red_v.replaceChild(white_balance_red_vNew, white_balance_red_vOld);
 
-    QString backlightString = QString::number(backlightDate);
+    QString ba = QString::number(backlightDate);
+    QString backlightString = QString("%1 %2 %3").arg("\0").arg(h).arg("\0");
     QDomNode backlightOld = backlight.firstChild();
     backlight.firstChild().setNodeValue(backlightString);
     QDomNode backlightNew = backlight.firstChild();
     backlight.replaceChild(backlightNew, backlightOld);
 
-    QString gainString = QString::number(gainDate);
+    QString ga = QString::number(gainDate);
+    QString gainString = QString("%1 %2 %3").arg("\0").arg(h).arg("\0");
     QDomNode gainOld = gain.firstChild();
     gain.firstChild().setNodeValue(gainString);
     QDomNode gainNew = gain.firstChild();
     gain.replaceChild(gainNew, gainOld);
 
-    QString exposureString = QString::number(exposureDate);
+    QString e = QString::number(exposureDate);
+    QString exposureString = QString("%1 %2 %3").arg("\0").arg(h).arg("\0");
     QDomNode exposureOld = exposure.firstChild();
     exposure.firstChild().setNodeValue(exposureString);
     QDomNode exposureNew = exposure.firstChild();
