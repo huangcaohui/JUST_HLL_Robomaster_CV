@@ -3,13 +3,14 @@
 # Project created by QtCreator 2017-11-24T21:43:33
 #
 #-------------------------------------------------
+
 QT += serialport
 QT += core gui
 QT += xml
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
-TARGET = JUST_HLL_Robomaster_CV
+TARGET = JUST_HLL_Robermaster_CV
 TEMPLATE = app
 
 # The following define makes your compiler emit warnings if you use
@@ -23,12 +24,39 @@ DEFINES += QT_DEPRECATED_WARNINGS
 # You can also select to disable deprecated APIs only up to a certain version of Qt.
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
+CONFIG += c++11
+
+win32{
+INCLUDEPATH += D:/OpenCV3.4.3/opencv_3.4.3_build_qt/install/include\
+               D:/OpenCV3.4.3/opencv_3.4.3_build_qt/install/include/opencv\
+               D:/OpenCV3.4.3/opencv_3.4.3_build_qt/install/include/opencv2
+
+LIBS += D:/OpenCV3.4.3/opencv_3.4.3_build_qt/install/x86/mingw/lib/libopencv_*.dll.a
+}
+
+linux{
 INCLUDEPATH += /usr/local/include\
                /usr/local/include/opencv\
                /usr/local/include/opencv2
 
 
 LIBS += /usr/local/lib/libopencv_*.so.3.4.3
+
+debug{
+OBJECTS_DIR = ~/build-JUST_HLL_Robomaster_CV-Desktop_Qt_5_12_2_GCC_64bit-Debug
+UI_HEADERS_DIR = $$OBJECTS_DIR
+UI_SOURCES_DIR = $$OBJECTS_DIR
+MOC_DIR = $$OBJECTS_DIR
+DESTDIR = $$OBJECTS_DIR
+}
+release{
+OBJECTS_DIR = ~/build-JUST_HLL_Robomaster_CV-Desktop_Qt_5_12_2_GCC_64bit-Release
+UI_HEADERS_DIR = $$OBJECTS_DIR
+UI_SOURCES_DIR = $$OBJECTS_DIR
+MOC_DIR = $$OBJECTS_DIR
+DESTDIR = $$OBJECTS_DIR
+}
+}
 
 FORMS += \
     code/mainwindow.ui
@@ -68,3 +96,4 @@ DISTFILES += \
 #DEFINES += DEBUG
 
 QMAKE_CXXFLAGS += -Wno-sign-compare
+QMAKE_CXXFLAGS += -Wno-covered-switch-default

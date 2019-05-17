@@ -108,7 +108,7 @@ void Image::threshProcess(const Mat& srcImage,
     vector<vector<Point> > contours;//定义一个返回轮廓的容器
     findContours(value, contours, CV_RETR_EXTERNAL, CV_CHAIN_APPROX_NONE);
 
-    if(contours.size() != 0)
+    if(contours.size() > 1)
     {
         //轮廓的最小外接矩形
         Rect *boundRect = new Rect[contours.size()];
