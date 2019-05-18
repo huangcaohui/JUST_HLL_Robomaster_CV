@@ -78,7 +78,7 @@ void Control::run()
     Rect2d predictBlock;
 
     //填补帧
-    bool frequency[5] = {0};
+    bool frequency[4] = {0};
 
     //卡尔曼滤波初始化
     prediction.init();
@@ -158,8 +158,8 @@ void Control::run()
         }
 
         //进行检测与跟踪的装甲板填补
-        prediction.fre_fillArmourBlock(frame, frequency, sizeof(frequency)/sizeof(frequency[0]),
-                                       count, predictBlock, armourBlock, findArmourBlock);
+        prediction.fillArmourBlock(frame, frequency, sizeof(frequency)/sizeof(frequency[0]),
+                                   count, predictBlock, armourBlock, findArmourBlock);
 
         //在输出图像中画出装甲板中心轨迹
         //Tool::drawPoints(frame, points);
