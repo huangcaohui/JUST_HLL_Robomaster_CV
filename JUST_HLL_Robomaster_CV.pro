@@ -10,7 +10,7 @@ QT += xml
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
-TARGET = JUST_HLL_Robermaster_CV
+TARGET = JUST_HLL_Robomaster_CV
 TEMPLATE = app
 
 # The following define makes your compiler emit warnings if you use
