@@ -30,17 +30,17 @@ bool Camera::init(int cameraId, string xmlPath)
     srcFile.open(cameraId);
     srcFile.set(CAP_PROP_FRAME_WIDTH, 1280);
     srcFile.set(CAP_PROP_FRAME_HEIGHT, 720);
-    //    srcFile.set(CAP_PROP_SETTINGS, -1);
-    //    srcFile.set(CAP_PROP_BRIGHTNESS, params.brightness);
-    //    srcFile.set(CAP_PROP_CONTRAST, params.contrast);
-    //    srcFile.set(CAP_PROP_HUE, params.hue);
-    //    srcFile.set(CAP_PROP_SATURATION, params.saturation);
-    //    srcFile.set(CAP_PROP_PAN, params.pan);
-    //    srcFile.set(CAP_PROP_GAMMA, params.gamma);
-    //    srcFile.set(CAP_PROP_WHITE_BALANCE_RED_V, params.white_balance_red_v);
-    //    srcFile.set(CAP_PROP_BACKLIGHT, params.backlight);
-    //    srcFile.set(CAP_PROP_GAIN, params.gain);
-    //    srcFile.set(CAP_PROP_EXPOSURE, params.exposure);
+    srcFile.set(CAP_PROP_BRIGHTNESS, params.brightness);
+    srcFile.set(CAP_PROP_CONTRAST, params.contrast);
+    srcFile.set(CAP_PROP_HUE, params.hue);
+    srcFile.set(CAP_PROP_SATURATION, params.saturation);
+    srcFile.set(CAP_PROP_PAN, params.pan);
+    srcFile.set(CAP_PROP_GAMMA, params.gamma);
+    srcFile.set(CAP_PROP_WHITE_BALANCE_RED_V, params.white_balance_red_v);
+    srcFile.set(CAP_PROP_BACKLIGHT, params.backlight);
+    srcFile.set(CAP_PROP_GAIN, params.gain);
+    srcFile.set(CAP_PROP_EXPOSURE, params.exposure);
+    srcFile.set(CAP_PROP_SETTINGS, -1);
 
     return srcFile.isOpened();
 }
