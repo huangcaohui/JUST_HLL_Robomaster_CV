@@ -66,10 +66,9 @@ bool ArmourDetector::detect(Mat& srcImage)
     if(!armoursNum)
     {
         return false;
-    } 
+    }
 
     //对每个装甲板区域评分
-
     markArmourBlocks(srcImage, dstImage, armourBlocks, directAngle, armoursNum);
 
 #ifdef DEBUG
@@ -230,6 +229,9 @@ void ArmourDetector::extracArmourBlocks(RotatedRect* armourBlocks,
     for(int i = 0; i < lampsNum; ++i)
     {
         sequence[i] = false;
+    }
+    for(int i = 0; i < maxPair; ++i)
+    {
         directAngle[i] = 0;
     }
 
@@ -256,7 +258,7 @@ void ArmourDetector::extracArmourBlocks(RotatedRect* armourBlocks,
 
                     if((double(lampBlocks[i].size.area()) > 0.2*double(lampBlocks[j].size.area()))
                             &&(double(lampBlocks[j].size.area()) > 0.2*double(lampBlocks[i].size.area())))
-                    {                     
+                    {
                         //获取所有不重复的外接矩形
                         if(!sequence[i])
                         {
@@ -595,7 +597,7 @@ void ArmourDetector::domainCountDetect(const RotatedRect* initLightBlocks,
         //防止噪点产生干扰
         medianBlur(roi, roi, 3);
 
-        findContours(roi, contours, CV_RETR_EXTERNAL, CV_CHAIN_APPROX_NONE);
+        findContours(roi, contours, RETR_EXTERNAL, CHAIN_APPROX_NONE);
 
         for(unsigned int i = 0; i < contours.size(); ++i)
         {
@@ -725,14 +727,14 @@ void ArmourDetector::markArmourBlocks(const Mat& srcImage,
         //初始化
         armourArea[0] = armourBlocks[0].size.area();
         initArmour[0] = armourBlocks[0];
-        angle[0] = directAngle[0];        
+        angle[0] = directAngle[0];
         armourArea[1] = 0;
 
         //剪去旋转矩形的多余边角，得到装甲板的平行四边形区域
         //cutEdgeOfRect(fpoints);
 
         for(int i = 1; i < armoursNum; ++i)
-        {            
+        {
             if(armourBlocks[i].size.area() > armourArea[0])
             {
                 armourArea[0] = armourBlocks[i].size.area();
@@ -897,7 +899,7 @@ int ArmourDetector::extractMask(const RotatedRect* armourBlocks, Mat dstImage)
 
     vector<vector<Point> > contours;
 
-    findContours(mask, contours, CV_RETR_EXTERNAL, CV_CHAIN_APPROX_NONE);
+    findContours(mask, contours, RETR_EXTERNAL, CHAIN_APPROX_NONE);
 
     int contoursArea = 0;
 

@@ -47,16 +47,16 @@ bool Camera::init(int cameraId, string xmlPath)
 
 bool Camera::writeCamParams(string xmlPath)
 {
-    double brightnessDate = srcFile.get(CV_CAP_PROP_BRIGHTNESS);
-    double contrastDate = srcFile.get(CV_CAP_PROP_CONTRAST);
-    double hueDate = srcFile.get(CV_CAP_PROP_HUE);
-    double saturationDate = srcFile.get(CV_CAP_PROP_SATURATION);
-    double panDate = srcFile.get(CV_CAP_PROP_PAN);
-    double gammaDate = srcFile.get(CV_CAP_PROP_GAMMA);
-    double white_balance_red_vDate = srcFile.get(CV_CAP_PROP_WHITE_BALANCE_RED_V);
-    double backlightDate = srcFile.get(CV_CAP_PROP_BACKLIGHT);
-    double gainDate = srcFile.get(CV_CAP_PROP_GAIN);
-    double exposureDate = srcFile.get(CV_CAP_PROP_EXPOSURE);
+    double brightnessDate = srcFile.get(CAP_PROP_BRIGHTNESS);
+    double contrastDate = srcFile.get(CAP_PROP_CONTRAST);
+    double hueDate = srcFile.get(CAP_PROP_HUE);
+    double saturationDate = srcFile.get(CAP_PROP_SATURATION);
+    double panDate = srcFile.get(CAP_PROP_PAN);
+    double gammaDate = srcFile.get(CAP_PROP_GAMMA);
+    double white_balance_red_vDate = srcFile.get(CAP_PROP_WHITE_BALANCE_RED_V);
+    double backlightDate = srcFile.get(CAP_PROP_BACKLIGHT);
+    double gainDate = srcFile.get(CAP_PROP_GAIN);
+    double exposureDate = srcFile.get(CAP_PROP_EXPOSURE);
 
     std::cout<<brightnessDate<<'\t';
     std::cout<<contrastDate<<'\t';

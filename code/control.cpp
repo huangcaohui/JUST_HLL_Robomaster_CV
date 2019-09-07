@@ -61,7 +61,7 @@ Control::Control()
 void Control::run()
 {
     //创建原图像显示窗口
-    namedWindow("srcFile", WINDOW_AUTOSIZE);
+    //namedWindow("srcFile", WINDOW_AUTOSIZE);
 
     //vector<Point> points;
 
@@ -117,7 +117,7 @@ void Control::run()
         //waitKey(1);
 
         //读取一帧图像
-        camera >> frame;
+        video >> frame;
         //writer << frame;
 
         //视频播放完毕跳出程序

@@ -45,7 +45,7 @@ Mat Image::preprocess(const Mat& srcImage)
     Mat dstImage;
 
     //将bgr格式(opencv默认将彩色图片存储为bgr格式)图像转变为hsv格式
-    cvtColor(srcImage, dstImage, CV_BGR2HSV);
+    cvtColor(srcImage, dstImage, COLOR_BGR2HSV);
     //分离图像三通道
     Mat hsvImages[3];
     split(dstImage, hsvImages);
@@ -106,7 +106,7 @@ void Image::threshProcess(const Mat& srcImage,
 {
     //查找轮廓，只检索最外面的轮廓，将所有的连码点转换成点
     vector<vector<Point> > contours;//定义一个返回轮廓的容器
-    findContours(value, contours, CV_RETR_EXTERNAL, CV_CHAIN_APPROX_NONE);
+    findContours(value, contours, RETR_EXTERNAL, CHAIN_APPROX_NONE);
 
     if(contours.size() > 1)
     {

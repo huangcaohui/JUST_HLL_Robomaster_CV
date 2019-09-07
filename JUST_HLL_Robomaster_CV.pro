@@ -27,11 +27,10 @@ DEFINES += QT_DEPRECATED_WARNINGS
 CONFIG += c++11
 
 win32{
-INCLUDEPATH += D:/OpenCV3.4.3/opencv_3.4.3_build_qt/install/include\
-               D:/OpenCV3.4.3/opencv_3.4.3_build_qt/install/include/opencv\
-               D:/OpenCV3.4.3/opencv_3.4.3_build_qt/install/include/opencv2
+INCLUDEPATH += F:/OpenCV/OpenCV4.1.1/opencv_4.1.1_build_qt/include\
+               F:/OpenCV/OpenCV4.1.1/opencv_4.1.1_build_qt/include/opencv2
 
-LIBS += D:/OpenCV3.4.3/opencv_3.4.3_build_qt/install/x86/mingw/lib/libopencv_*.dll.a
+LIBS += F:/OpenCV/OpenCV4.1.1/opencv_4.1.1_build_qt/x64/mingw/lib/libopencv_*.dll.a
 }
 
 linux{
