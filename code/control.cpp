@@ -117,7 +117,7 @@ void Control::run()
         //waitKey(1);
 
         //读取一帧图像
-        video >> frame;
+        camera >> frame;
         //writer << frame;
 
         //视频播放完毕跳出程序

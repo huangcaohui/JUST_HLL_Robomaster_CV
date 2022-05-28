@@ -51,7 +51,7 @@ void Serial::writeBytes(const cv::Rect2d& armourBlock, const cv::Mat& resizeFram
     QByteArray buffer;
     int checksum = 4*0x2F2F;
 
-    //如果没有检测到装甲板，则发送特殊字节串b 01111111 01111111 01111111 01111111
+    //如果没有检测到装甲板，则发送特殊字节串b 00101111 00101111 00101111 00101111
     if(findArmourBlock == false)
     {
         buffer.append(QByteArray(8, 0x2F));

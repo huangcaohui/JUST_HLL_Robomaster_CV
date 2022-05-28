@@ -92,7 +92,7 @@ DISTFILES += \
     statics/params.xml \
     statics/cameraParams.xml
 
-#DEFINES += DEBUG
+DEFINES += DEBUG
 
 QMAKE_CXXFLAGS += -Wno-sign-compare
 QMAKE_CXXFLAGS += -Wno-covered-switch-default
